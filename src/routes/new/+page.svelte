@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { addChecklist, parseFromQueryParams } from '$lib/checklistUtils.svelte';
+  import { createChecklist, parseFromQueryParams } from '$lib/checklistUtils.svelte';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { type Checklist } from '../../model/Checklist';
@@ -10,9 +10,12 @@
   const checklist = $state<Checklist>(parseFromQueryParams(url.searchParams));
 
   function submit() {
-    addChecklist(checklist);
-
-    window.location.href = `/check/${checklist.name}`;
+    try {
+      createChecklist(checklist);
+      window.location.href = `/check/${checklist.name}`;
+    } catch (error: any) {
+      alert(error.message);
+    }
   }
 </script>
 
