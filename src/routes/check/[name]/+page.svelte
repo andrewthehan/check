@@ -1,6 +1,12 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { checklistsStore, createShareLink } from '$lib/checklistUtils.svelte';
+  import {
+    addChecklist,
+    checklistsStore,
+    createShareLink,
+    newChecklist,
+    removeChecklist
+  } from '$lib/checklistUtils.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { Checkbox } from '$lib/components/ui/checkbox';
@@ -10,7 +16,6 @@
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Progress } from '$lib/components/ui/progress';
   import QR from '@svelte-put/qr/svg/QR.svelte';
-  import Clock from 'lucide-svelte/icons/clock';
   import QrCode from 'lucide-svelte/icons/qr-code';
   import Trash2 from 'lucide-svelte/icons/trash-2';
   import MoreVertical from 'lucide-svelte/icons/more-vertical';
@@ -33,49 +38,92 @@
   // 	console.log('update date');
   // 	checklist.updateDate = new Date();
   // });
+  let isEditingDescription = $state(false);
 </script>
 
 {#if checklist == null}
-  <section class="not-found">
-    <p>Checklist "{name}" not found.</p>
-    <Button onclick={() => (window.location.href = `/new?name=${name}`)}>Create</Button>
+  <section>
+    <h1 class="flex scroll-m-20 items-center text-4xl font-extrabold tracking-tight lg:text-5xl">
+      {name}
+    </h1>
+    <p class="text-md my-4 italic">Checklist not found</p>
+    <Button onclick={() => checklists.value.push(newChecklist({ name }))}>Create</Button>
   </section>
 {:else}
   <section class="header">
     <h1 class="flex scroll-m-20 items-center text-4xl font-extrabold tracking-tight lg:text-5xl">
       {name}
-      {#if checklist.items.every((i) => i.completeDate != null)}
+      {#if checklist.items.length > 0 && checklist.items.every((i) => i.completeDate != null)}
         <Badge class="ml-2" variant="secondary">Completed</Badge>
       {/if}
     </h1>
-    <Dialog.Root>
-      <Dialog.Trigger><QrCode /></Dialog.Trigger>
-      <Dialog.Content class="sm:max-w-[425px]">
-        <Dialog.Header>
-          <Dialog.Title>Copy checklist</Dialog.Title>
-        </Dialog.Header>
-        <QR data={shareUrl} anchorOuterFill="#3F3FAA" anchorInnerFill="#FFA400" />
-      </Dialog.Content>
-    </Dialog.Root>
+    <div class="flex items-center">
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger><MoreVertical class="h-4 w-4" /></DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          <DropdownMenu.Label class="flex items-center">
+            Create: {checklist.createDate.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric'
+            })}
+          </DropdownMenu.Label>
+          <DropdownMenu.Label class="flex items-center">
+            Last update: {checklist.updateDate.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric'
+            })}
+          </DropdownMenu.Label>
+          <DropdownMenu.Separator />
+          <Dialog.Root>
+            <Dialog.Trigger
+              ><DropdownMenu.Label class="flex items-center"
+                ><QrCode class="mr-2 h-4 w-4" />
+                Copy
+              </DropdownMenu.Label></Dialog.Trigger
+            >
+            <Dialog.Content class="w-[90vw] max-w-[512px]">
+              <Dialog.Header>
+                <Dialog.Title>Copy checklist</Dialog.Title>
+              </Dialog.Header>
+              <QR data={shareUrl} anchorOuterFill="#3F3FAA" anchorInnerFill="#FFA400" />
+            </Dialog.Content>
+          </Dialog.Root>
+          <DropdownMenu.Separator />
+          <DropdownMenu.Item
+            onclick={() => {
+              removeChecklist(checklist.name);
+              window.location.href = '/check';
+            }}><Trash2 class="mr-2 h-4 w-4" />Delete</DropdownMenu.Item
+          >
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+    </div>
   </section>
-  <p class="my-4 text-lg font-semibold">{checklist.description}</p>
-  <p class="text-sm text-muted-foreground">
-    Created: {checklist.createDate.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })}
-  </p>
-  <p class="text-sm text-muted-foreground">
-    Last updated: {checklist.updateDate.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })}
-  </p>
-
+  {#if isEditingDescription}
+    <form class="my-4" onsubmit={() => (isEditingDescription = false)}>
+      <Input
+        type="text"
+        placeholder="Description"
+        bind:value={checklist.description}
+        on:blur={() => (isEditingDescription = false)}
+        autofocus
+      />
+    </form>
+  {:else}
+    <button
+      type="button"
+      class="text-md my-4 text-left italic"
+      onclick={() => (isEditingDescription = true)}
+    >
+      {checklist.description.trim().length > 0 ? checklist.description : 'No description'}
+    </button>
+  {/if}
   <Progress
     class="my-4 h-2"
     value={checklist.items.filter((i) => i.completeDate != null).length / checklist.items.length}
@@ -115,26 +163,21 @@
       <DropdownMenu.Root>
         <DropdownMenu.Trigger><MoreVertical class="h-4 w-4" /></DropdownMenu.Trigger>
         <DropdownMenu.Content>
-          <DropdownMenu.Group>
-            {#if checklist.items[i].completeDate != null}
-              <DropdownMenu.Label class="flex items-center"
-                ><Clock class="mr-2 h-4 w-4" />{checklist.items[i].completeDate.toLocaleDateString(
-                  'en-US',
-                  {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric'
-                  }
-                )}</DropdownMenu.Label
-              >
-              <DropdownMenu.Separator />
-            {/if}
-            <DropdownMenu.Item onclick={() => checklist.items.splice(i, 1)}
-              ><Trash2 class="mr-2 h-4 w-4" />Delete</DropdownMenu.Item
+          {#if checklist.items[i].completeDate != null}
+            <DropdownMenu.Label class="flex items-center"
+              >Complete: {checklist.items[i].completeDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric'
+              })}</DropdownMenu.Label
             >
-          </DropdownMenu.Group>
+            <DropdownMenu.Separator />
+          {/if}
+          <DropdownMenu.Item onclick={() => checklist.items.splice(i, 1)}
+            ><Trash2 class="mr-2 h-4 w-4" />Delete</DropdownMenu.Item
+          >
         </DropdownMenu.Content>
       </DropdownMenu.Root>
     </section>
@@ -146,12 +189,6 @@
     display: flex;
     flex-flow: row;
     justify-content: space-between;
-    align-items: center;
-  }
-
-  .not-found {
-    display: flex;
-    flex-direction: column;
     align-items: center;
   }
 

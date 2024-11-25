@@ -5,8 +5,11 @@
   import { ModeWatcher } from 'mode-watcher';
   import { type Snippet } from 'svelte';
   import '../app.css';
+  import { afterNavigate } from '$app/navigation';
 
   export let children: Snippet;
+
+  afterNavigate(() => document.getElementById('main')?.scrollTo(0, 0));
 </script>
 
 <svelte:head>
@@ -24,7 +27,7 @@
     </Button>
   </header>
 
-  <main>
+  <main id="main">
     <div class="main-content">
       {@render children()}
     </div>

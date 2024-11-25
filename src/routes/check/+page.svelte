@@ -18,7 +18,7 @@
 
 <section class="header">
   <Input type="text" bind:value={filter} placeholder="Search" />
-  <Button class="mx-2" href="/new" size="sm"><Plus class="mr-2 h-4 w-4" />Create</Button>
+  <Button class="ml-2" href="/new" size="sm"><Plus class="mr-2 h-4 w-4" />Create</Button>
 </section>
 
 <section>
@@ -35,7 +35,7 @@
           <Card.Title class="flex items-center">
             {name}
             <Badge class="ml-2" variant="secondary">{items.length} items</Badge>
-            {#if items.every((i) => i.completeDate != null)}
+            {#if items.length > 0 && items.every((i) => i.completeDate != null)}
               <Badge class="ml-1" variant="secondary">Completed</Badge>
             {/if}
           </Card.Title>

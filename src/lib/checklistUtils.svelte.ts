@@ -1,4 +1,4 @@
-import type { Checklist } from '../model/Checklist';
+import type { Checklist, ChecklistItem } from '../model/Checklist';
 import { LocalStore, localStore } from './localStore.svelte';
 
 export const KEY = 'checklists';
@@ -41,14 +41,26 @@ export function removeChecklist(checklistName: String): void {
 }
 
 export function parseFromQueryParams(searchParams: URLSearchParams): Checklist {
-  return {
+  return newChecklist({
     name: searchParams.get('name') ?? '',
     description: searchParams.get('description') ?? '',
-    items:
-      searchParams
-        .get('items')
-        ?.split(',')
-        ?.map((itemName) => ({ name: itemName, completeDate: null })) ?? [],
+    items: searchParams.get('items')?.split(',') ?? []
+  });
+}
+
+export function newChecklist({
+  name,
+  description = '',
+  items = []
+}: {
+  name: string;
+  description?: string;
+  items?: string[];
+}): Checklist {
+  return {
+    name,
+    description,
+    items: items.map((itemName) => ({ name: itemName, completeDate: null })),
     createDate: new Date(),
     updateDate: new Date()
   };
