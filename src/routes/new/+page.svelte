@@ -1,60 +1,41 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { addChecklist, parseFromQueryParams } from '$lib/checklistUtils.svelte';
+	import { Button } from '$lib/components/ui/button';
+	import { Input } from '$lib/components/ui/input';
+	import { type Checklist } from '../../model/Checklist';
 
 	const { url } = $page;
 
-	let name = $state(url.searchParams.get('name') ?? '');
-	let description = $state(url.searchParams.get('description') ?? '');
-	let items = $state(url.searchParams.get('items')?.split(',') ?? []);
-
-	url.searchParams.delete('name');
-	url.searchParams.delete('description');
-	url.searchParams.delete('items');
+	const checklist = $state<Checklist>(parseFromQueryParams(url.searchParams));
 
 	function submit() {
-		const data = {
-			description,
-			items: items.map((item) => ({ label: item, checked: false }))
-		};
+		addChecklist(checklist);
 
-		localStorage.setItem(name, JSON.stringify(data));
-
-		window.location.href = `/check/${name}`;
+		window.location.href = `/check/${checklist.name}`;
 	}
 </script>
 
 <form onsubmit={submit}>
-	<p>
-		<label for="name">Name</label>
-		<input id="name" type="text" bind:value={name} placeholder="Name" />
-	</p>
-	<p>
-		<label for="description">Description</label>
-		<input id="description" type="text" bind:value={description} placeholder="Description" />
-	</p>
-	<p>
-		{#each items as item, i}
-			<label for={`item${i}`}>Item #{i}</label>
-			<input id={`item${i}`} type="text" bind:value={items[i]} placeholder="Item #{i}" />
-		{/each}
-		<button
-			onclick={(event) => {
-				event.preventDefault();
-				items.push('new item');
-			}}>Add</button
-		>
-	</p>
-	<input type="submit" value="Create!" />
+	<h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">New checklist</h1>
+	{#if checklist.description}
+		<p class="text-muted-foreground text-sm">{checklist.description}</p>
+	{/if}
+	{#if checklist.items.length > 0}
+		<p class="text-muted-foreground text-sm">{checklist.items.length} items</p>
+	{/if}
+	<p></p>
+	<Input class="my-4" type="text" bind:value={checklist.name} placeholder="Name" />
+	<Button class="my-4 self-center" type="submit">Create</Button>
 </form>
 
 <style>
 	form {
 		display: flex;
 		flex-direction: column;
-	}
+		justify-content: center;
+		align-items: stretch;
 
-	form p {
-		display: flex;
-		flex-direction: column;
+		flex: 1;
 	}
 </style>
