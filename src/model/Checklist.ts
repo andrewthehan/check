@@ -8,5 +8,5 @@ export type Checklist = {
 
 export type ChecklistItem = {
   name: string;
-  completed: boolean;
+  completeDate: Date | null;
 };

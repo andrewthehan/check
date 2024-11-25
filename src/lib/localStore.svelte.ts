@@ -26,7 +26,12 @@ export class LocalStore<T> {
   }
 
   deserialize(item: string): T {
-    return JSON.parse(item);
+    return JSON.parse(item, (key, value) => {
+      if (key.endsWith('Date') && value != null) {
+        return new Date(value);
+      }
+      return value;
+    });
   }
 }
 

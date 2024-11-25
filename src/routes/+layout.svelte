@@ -25,10 +25,10 @@
   </header>
 
   <main>
-    {@render children()}
+    <div class="main-content">
+      {@render children()}
+    </div>
   </main>
-
-  <footer></footer>
 </div>
 
 <style>
@@ -36,7 +36,7 @@
     display: flex;
     flex-flow: column;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
   }
 
   header {
@@ -59,20 +59,21 @@
   }
 
   main {
+    width: 100%;
     flex: 1;
 
     display: flex;
     flex-direction: column;
+    align-items: center;
 
-    width: 768px;
-    max-width: 88vw;
+    overflow-y: auto;
   }
 
-  footer {
+  .main-content {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 12px;
+    flex-direction: column;
+
+    width: 768px;
+    max-width: 90vw;
   }
 </style>

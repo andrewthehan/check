@@ -48,7 +48,7 @@ export function parseFromQueryParams(searchParams: URLSearchParams): Checklist {
       searchParams
         .get('items')
         ?.split(',')
-        ?.map((itemName) => ({ name: itemName, completed: false })) ?? [],
+        ?.map((itemName) => ({ name: itemName, completeDate: null })) ?? [],
     createDate: new Date(),
     updateDate: new Date()
   };

@@ -35,7 +35,7 @@
           <Card.Title class="flex items-center">
             {name}
             <Badge class="ml-2" variant="secondary">{items.length} items</Badge>
-            {#if items.every((i) => i.completed)}
+            {#if items.every((i) => i.completeDate != null)}
               <Badge class="ml-1" variant="secondary">Completed</Badge>
             {/if}
           </Card.Title>
@@ -45,7 +45,8 @@
         </Card.Content>
         <Card.Footer>
           <Progress
-            value={checklist.items.filter((i) => i.completed).length / checklist.items.length}
+            value={checklist.items.filter((i) => i.completeDate != null).length /
+              checklist.items.length}
             max={1}
             class="h-2"
           />
