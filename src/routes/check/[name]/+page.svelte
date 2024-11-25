@@ -96,7 +96,7 @@
 		<Button class="ml-4" type="submit">Add</Button>
 	</form>
 
-	{#each checklist.items as item, i}
+	{#each checklist.items as item, i (item.name)}
 		<section class="item">
 			<Checkbox id={`item${i}`} bind:checked={checklist.items[i].completed} />
 			<Label

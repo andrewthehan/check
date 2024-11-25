@@ -26,7 +26,7 @@
 		<p>No checklists found</p>
 	{/if}
 
-	{#each filteredChecklists as checklist}
+	{#each filteredChecklists as checklist (checklist.name)}
 		{@const { name, description, items, createDate, updateDate } = checklist}
 
 		<a href={`/check/${name}`}>
