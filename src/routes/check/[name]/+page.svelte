@@ -1,7 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import {
-    addChecklist,
     checklistsStore,
     createShareLink,
     newChecklist,
@@ -11,14 +10,15 @@
   import { Button } from '$lib/components/ui/button';
   import { Checkbox } from '$lib/components/ui/checkbox';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
-  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Progress } from '$lib/components/ui/progress';
   import QR from '@svelte-put/qr/svg/QR.svelte';
-  import QrCode from 'lucide-svelte/icons/qr-code';
-  import Trash2 from 'lucide-svelte/icons/trash-2';
   import MoreVertical from 'lucide-svelte/icons/more-vertical';
+  import QrCode from 'lucide-svelte/icons/qr-code';
+  import Share2 from 'lucide-svelte/icons/share-2';
+  import Trash2 from 'lucide-svelte/icons/trash-2';
 
   const { params, url } = $page;
   const { name } = params;
@@ -91,6 +91,21 @@
               <Dialog.Header>
                 <Dialog.Title>Copy checklist</Dialog.Title>
               </Dialog.Header>
+              <div class="flex items-center">
+                <Input value={shareUrl} readonly />
+                <Button
+                  class="ml-2"
+                  on:click={async () => {
+                    navigator.share({
+                      title: checklist.name,
+                      text: checklist.description,
+                      url: shareUrl
+                    });
+                  }}
+                  size="icon"
+                  ><Share2 class="h-4 w-4" />
+                </Button>
+              </div>
               <QR data={shareUrl} anchorOuterFill="#3F3FAA" anchorInnerFill="#FFA400" />
             </Dialog.Content>
           </Dialog.Root>
