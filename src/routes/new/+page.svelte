@@ -15,10 +15,10 @@
 
   const checklist = $state<Checklist>(parseFromQueryParams(url.searchParams));
 
-  function submit() {
+  async function create() {
     try {
       createChecklist(checklist);
-      goto(`/check/${checklist.name}`);
+      await goto(`/check/${checklist.name}`);
     } catch (error: any) {
       alert(error.message);
     }
@@ -33,12 +33,17 @@
 
     generatedChecklistItems.then((items) => {
       items.forEach((i) => checklist.items.push({ name: i, completeDate: null }));
-      submit();
+      create();
     });
   });
 </script>
 
-<form onsubmit={submit}>
+<form
+  onsubmit={(e) => {
+    e.preventDefault();
+    create();
+  }}
+>
   <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight">
     {checklist.items.length > 0 ? 'Copy checklist' : 'New checklist'}
   </h1>

@@ -55,5 +55,6 @@ export async function generateChecklistItems(name: string, count: number): Promi
 
   const reply = await engine.chat.completions.create({ messages });
   const content = reply.choices[0].message.content;
-  return content?.split(',')?.map((name) => name.trim()) ?? [];
+  const transformed = content?.split(',')?.map((name) => name.trim()) ?? [];
+  return [...new Set(transformed)];
 }

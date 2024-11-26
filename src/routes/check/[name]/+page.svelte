@@ -169,7 +169,7 @@
       />
       <Label
         class={`ml-6 flex-1 text-xl ${sortedItems[i].completeDate != null ? 'line-through' : ''}`}
-        for={`item${i}`}>&nbsp;{sortedItems[i].name}&nbsp;</Label
+        for={`item${i}`}>{sortedItems[i].name}</Label
       >
       <DropdownMenu.Root>
         <DropdownMenu.Trigger><MoreVertical class="h-4 w-4" /></DropdownMenu.Trigger>
