@@ -50,20 +50,25 @@
   {@const { name, description, items, createDate, updateDate } = checklist}
   <a href={`/check/${name}`}>
     <Card.Root class="my-2">
+      <Card.Header class="pt-2">
+        <Progress value={getCompletionPercentage(checklist)} max={1} class="mt-2 h-2" />
+      </Card.Header>
       <Card.Content>
         <Card.Title class="flex items-center">
           {name}
-          <Badge class="ml-2" variant="secondary">{items.length}&nbsp;items</Badge>
-          {#if items.length > 0 && items.every((i) => i.completeDate != null)}
-            <Badge class="ml-1" variant="secondary">Completed</Badge>
-          {/if}
         </Card.Title>
-        <Card.Description class="overflow-hidden text-ellipsis whitespace-nowrap italic">
-          {description.length > 0 ? description : 'No description'}
-        </Card.Description>
+        {#if checklist.description}
+          <Card.Description class="mt-1 overflow-hidden text-ellipsis whitespace-nowrap">
+            {description}
+          </Card.Description>
+        {/if}
       </Card.Content>
-      <Card.Footer>
-        <Progress value={getCompletionPercentage(checklist)} max={1} class="h-2" />
+      <Card.Footer class="flex-wrap space-x-1">
+        <Badge variant="secondary">Created:&nbsp;{createDate.toLocaleDateString('en-US')}</Badge>
+        <Badge variant="secondary">{items.length}&nbsp;items</Badge>
+        {#if items.length > 0 && items.every((i) => i.completeDate != null)}
+          <Badge variant="secondary">Completed</Badge>
+        {/if}
       </Card.Footer>
     </Card.Root>
   </a>

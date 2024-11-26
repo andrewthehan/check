@@ -1,8 +1,13 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { createChecklist, parseFromQueryParams } from '$lib/checklistUtils.svelte';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
+  import { generateChecklistItems } from '$lib/llm';
+  import LoaderCircle from 'lucide-svelte/icons/loader-circle';
+  import Pencil from 'lucide-svelte/icons/pencil';
+  import WandSparkles from 'lucide-svelte/icons/wand-sparkles';
   import { type Checklist } from '../../model/Checklist';
 
   const { url } = $page;
@@ -12,24 +17,54 @@
   function submit() {
     try {
       createChecklist(checklist);
-      window.location.href = `/check/${checklist.name}`;
+      goto(`/check/${checklist.name}`);
     } catch (error: any) {
       alert(error.message);
     }
   }
+
+  let generatedChecklistItems = $state<Promise<string[]>>();
+
+  $effect(() => {
+    if (generatedChecklistItems == null) {
+      return;
+    }
+
+    generatedChecklistItems.then((items) => {
+      items.forEach((i) => checklist.items.push({ name: i, completeDate: null }));
+      submit();
+    });
+  });
 </script>
 
 <form onsubmit={submit}>
-  <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">New checklist</h1>
+  <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight">New checklist</h1>
   {#if checklist.description}
     <p class="text-sm text-muted-foreground">{checklist.description}</p>
   {/if}
   {#if checklist.items.length > 0}
     <p class="text-sm text-muted-foreground">{checklist.items.length} items</p>
   {/if}
-  <p></p>
   <Input class="my-4" type="text" bind:value={checklist.name} placeholder="Name" />
-  <Button class="my-4 self-center" type="submit">Create</Button>
+  <div class="my-4 flex self-center">
+    <Button type="submit" disabled={checklist.name.length === 0}
+      ><Pencil class="mr-2 h-4 w-4" />Create</Button
+    >
+
+    {#if generatedChecklistItems == null}
+      <Button
+        class="mx-2"
+        disabled={checklist.name.length === 0}
+        onclick={() => (generatedChecklistItems = generateChecklistItems(checklist.name, 10))}
+      >
+        <WandSparkles class="mr-2 h-4 w-4" />Create with AI
+      </Button>
+    {:else}
+      <Button class="mx-2" disabled>
+        <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />Generating
+      </Button>
+    {/if}
+  </div>
 </form>
 
 <style>

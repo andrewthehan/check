@@ -6,5 +6,6 @@ A minimal checklist app.
 
 ## Features
 
-- Store all your data locally.
+- Use [in-browser AI](https://webllm.mlc.ai/) to generate your checklists.
+- Store all your data [locally](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
 - Reuse and share checklists.

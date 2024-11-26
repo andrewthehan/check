@@ -1,6 +1,7 @@
 <script lang="ts">
   import { afterNavigate } from '$app/navigation';
   import { Button } from '$lib/components/ui/button';
+  import { Toaster } from '$lib/components/ui/sonner';
   import CheckCircle from 'lucide-svelte/icons/check-circle';
   import Layers from 'lucide-svelte/icons/layers';
   import Plus from 'lucide-svelte/icons/plus';
@@ -19,6 +20,7 @@
 </svelte:head>
 
 <ModeWatcher />
+<Toaster />
 <div class="root">
   <header>
     <a href="/" class="home"><CheckCircle class="mr-2 h-4 w-4" />Check</a>
