@@ -25,8 +25,11 @@
   </h1>
   <ul class="my-6 ml-6 list-disc [&>li]:mt-2">
     <li>
-      Use <a href="https://webllm.mlc.ai/" target="_blank" class="underline">in-browser AI</a> to generate
-      your checklists.
+      Generate your checklists using <a
+        href="https://webllm.mlc.ai/"
+        target="_blank"
+        class="underline">in-browser AI</a
+      >.
     </li>
     <li>
       Store all your data
