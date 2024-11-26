@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { createChecklist, parseFromQueryParams } from '$lib/checklistUtils.svelte';
+  import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { generateChecklistItems } from '$lib/llm';
@@ -38,12 +39,16 @@
 </script>
 
 <form onsubmit={submit}>
-  <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight">New checklist</h1>
+  <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight">
+    {checklist.items.length > 0 ? 'Copy checklist' : 'New checklist'}
+  </h1>
   {#if checklist.description}
-    <p class="text-sm text-muted-foreground">{checklist.description}</p>
+    <p class="mt-2 text-sm text-muted-foreground">{checklist.description}</p>
   {/if}
   {#if checklist.items.length > 0}
-    <p class="text-sm text-muted-foreground">{checklist.items.length} items</p>
+    <section class="mt-2">
+      <Badge variant="secondary">{checklist.items.length}&nbsp;items</Badge>
+    </section>
   {/if}
   <Input class="my-4" type="text" bind:value={checklist.name} placeholder="Name" />
   <div class="my-4 flex self-center">
@@ -51,18 +56,20 @@
       ><Pencil class="mr-2 h-4 w-4" />Create</Button
     >
 
-    {#if generatedChecklistItems == null}
-      <Button
-        class="mx-2"
-        disabled={checklist.name.length === 0}
-        onclick={() => (generatedChecklistItems = generateChecklistItems(checklist.name, 10))}
-      >
-        <WandSparkles class="mr-2 h-4 w-4" />Create with AI
-      </Button>
-    {:else}
-      <Button class="mx-2" disabled>
-        <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />Generating
-      </Button>
+    {#if checklist.items.length === 0}
+      {#if generatedChecklistItems == null}
+        <Button
+          class="mx-2"
+          disabled={checklist.name.length === 0}
+          onclick={() => (generatedChecklistItems = generateChecklistItems(checklist.name, 10))}
+        >
+          <WandSparkles class="mr-2 h-4 w-4" />Create with AI
+        </Button>
+      {:else}
+        <Button class="mx-2" disabled>
+          <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />Generating
+        </Button>
+      {/if}
     {/if}
   </div>
 </form>

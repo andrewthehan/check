@@ -101,7 +101,7 @@
     </h1>
     <div class="mt-3 flex items-center">
       <DropdownMenu.Root>
-        <DropdownMenu.Trigger><MoreVertical /></DropdownMenu.Trigger>
+        <DropdownMenu.Trigger><MoreVertical class="h-4 w-4" /></DropdownMenu.Trigger>
         <DropdownMenu.Content>
           <DropdownMenu.Item
             onclick={() => {
