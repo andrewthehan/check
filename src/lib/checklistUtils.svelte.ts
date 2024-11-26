@@ -4,8 +4,29 @@ import { JSONSerializer } from './serializers';
 
 export const CHECKLISTS_KEY = 'checklists';
 
+const EXAMPLE_CHECKLIST: Checklist = {
+  name: 'My first checklist',
+  description: 'A simple checklist.',
+  items: [
+    {
+      name: 'Create your first checklist',
+      completeDate: new Date()
+    },
+    {
+      name: 'Mark items as complete',
+      completeDate: null
+    },
+    {
+      name: 'Share your checklist with others',
+      completeDate: null
+    }
+  ],
+  createDate: new Date(),
+  updateDate: new Date()
+};
+
 export function checklistsStore(): LocalStore<Checklist[]> {
-  return localStore<Checklist[]>(CHECKLISTS_KEY, [], new JSONSerializer());
+  return localStore<Checklist[]>(CHECKLISTS_KEY, [EXAMPLE_CHECKLIST], new JSONSerializer());
 }
 
 export function exportData(): void {
