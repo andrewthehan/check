@@ -19,6 +19,7 @@
   import QrCode from 'lucide-svelte/icons/qr-code';
   import Share2 from 'lucide-svelte/icons/share-2';
   import Trash2 from 'lucide-svelte/icons/trash-2';
+  import { getCompletionPercentage } from '../../../model/SortOptions';
 
   const { params, url } = $page;
   const { name } = params;
@@ -140,11 +141,7 @@
       {checklist.description.trim().length > 0 ? checklist.description : 'No description'}
     </button>
   {/if}
-  <Progress
-    class="my-4 h-2"
-    value={checklist.items.filter((i) => i.completeDate != null).length / checklist.items.length}
-    max={1}
-  />
+  <Progress class="my-4 h-2" value={getCompletionPercentage(checklist)} max={1} />
   <form
     class="my-4 flex"
     onsubmit={() => {

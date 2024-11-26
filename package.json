@@ -9,7 +9,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "format": "prettier --write .",
-    "lint": "prettier --check . && eslint ."
+    "lint": "prettier --check . && eslint .",
+    "deploy": "npm run build && npx gh-pages -d build --cname check.andrewhan.dev -t true"
   },
   "devDependencies": {
     "@svelte-put/qr": "^2.0.0",

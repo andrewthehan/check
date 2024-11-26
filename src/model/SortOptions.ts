@@ -41,6 +41,14 @@ export function sortChecklists(
   return checklists.toSorted(getSorter(sortOption));
 }
 
+export function getCompletionPercentage(checklist: Checklist): number {
+  if (checklist.items.length === 0) {
+    return 0;
+  }
+  const completed = checklist.items.filter((i) => i.completeDate).length;
+  return completed / checklist.items.length;
+}
+
 export function getSorter(
   sortOption: ChecklistSortOptions
 ): (a: Checklist, b: Checklist) => number {
@@ -54,10 +62,6 @@ export function getSorter(
     case ChecklistSortOptions.UPDATE_DATE:
       return (a, b) => b.updateDate.getTime() - a.updateDate.getTime();
     case ChecklistSortOptions.COMPLETION:
-      return (a, b) => {
-        const aComplete = a.items.filter((i) => i.completeDate).length;
-        const bComplete = b.items.filter((i) => i.completeDate).length;
-        return aComplete / a.items.length - bComplete / b.items.length;
-      };
+      return (a, b) => getCompletionPercentage(a) - getCompletionPercentage(b);
   }
 }
