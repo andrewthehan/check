@@ -16,7 +16,7 @@
 
 <svelte:head>
   <title>Check</title>
-  <meta name="description" content="Checklist app" />
+  <meta name="description" content="A minimal checklist app" />
 </svelte:head>
 
 <ModeWatcher />
