@@ -1,10 +1,11 @@
 import type { Checklist } from '../model/Checklist';
 import { LocalStore, localStore } from './localStore.svelte';
+import { JSONSerializer } from './serializers';
 
-export const KEY = 'checklists';
+export const CHECKLISTS_KEY = 'checklists';
 
 export function checklistsStore(): LocalStore<Checklist[]> {
-  return localStore<Checklist[]>(KEY, []);
+  return localStore<Checklist[]>(CHECKLISTS_KEY, [], new JSONSerializer());
 }
 
 export function exportData(): void {
@@ -44,7 +45,7 @@ export function importData(file: File): Promise<Checklist[]> {
 }
 
 export function getChecklists(): Checklist[] {
-  const checklists = localStorage.getItem(KEY);
+  const checklists = localStorage.getItem(CHECKLISTS_KEY);
   if (checklists == null) {
     return [];
   }
@@ -53,7 +54,7 @@ export function getChecklists(): Checklist[] {
 }
 
 export function setChecklists(checklists: Checklist[]): void {
-  localStorage.setItem(KEY, JSON.stringify(checklists));
+  localStorage.setItem(CHECKLISTS_KEY, JSON.stringify(checklists));
 }
 
 export function formatChecklist(checklist: Checklist): Checklist {

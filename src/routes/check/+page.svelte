@@ -1,11 +1,15 @@
 <script lang="ts">
   import { checklistsStore } from '$lib/checklistUtils.svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
   import { Input } from '$lib/components/ui/input';
   import { Progress } from '$lib/components/ui/progress';
-  import Plus from 'lucide-svelte/icons/plus';
+  import * as Select from '$lib/components/ui/select';
+  import {
+    ChecklistSortOptions,
+    checklistsSortOptionStore,
+    sortChecklists
+  } from '../../model/SortOptions';
 
   const checklists = checklistsStore();
 
@@ -14,19 +18,35 @@
   const filteredChecklists = $derived(
     checklists.value.filter((c) => c.name.toLocaleUpperCase().includes(filter.toLocaleUpperCase()))
   );
+
+  const sortOption = checklistsSortOptionStore();
+
+  const sortedFilteredChecklists = $derived(sortChecklists(filteredChecklists, sortOption.value));
 </script>
 
-<section class="header">
-  <Input type="text" bind:value={filter} placeholder="Search" />
-  <Button class="ml-2" href="/new" size="sm"><Plus class="mr-2 h-4 w-4" />Create</Button>
+<section class="flex-2 mt-2 flex">
+  <Input class="flex-[3]" type="text" bind:value={filter} placeholder="Search" />
+
+  <Select.Root selected={{ value: sortOption.value, label: sortOption.value }}>
+    <Select.Trigger class="ml-2 flex-[2]">
+      <Select.Value placeholder="Sort" />
+    </Select.Trigger>
+    <Select.Content>
+      {#each Object.values(ChecklistSortOptions) as option}
+        <Select.Item value={option} on:click={() => (sortOption.value = option)}>
+          {option}
+        </Select.Item>
+      {/each}
+    </Select.Content>
+  </Select.Root>
 </section>
 
 <section>
-  {#if filteredChecklists.length === 0}
+  {#if sortedFilteredChecklists.length === 0}
     <p>No checklists found</p>
   {/if}
 
-  {#each filteredChecklists as checklist (checklist.name)}
+  {#each sortedFilteredChecklists as checklist (checklist.name)}
     {@const { name, description, items, createDate, updateDate } = checklist}
 
     <a href={`/check/${name}`}>
@@ -39,9 +59,9 @@
               <Badge class="ml-1" variant="secondary">Completed</Badge>
             {/if}
           </Card.Title>
-          <Card.Description
-            >{description.length > 0 ? description : 'No description'}</Card.Description
-          >
+          <Card.Description class="overflow-hidden text-ellipsis whitespace-nowrap italic">
+            {description.length > 0 ? description : 'No description'}
+          </Card.Description>
         </Card.Content>
         <Card.Footer>
           <Progress
@@ -55,16 +75,3 @@
     </a>
   {/each}
 </section>
-
-<style>
-  .header {
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  section {
-    margin: 12px 0;
-  }
-</style>

@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { afterNavigate } from '$app/navigation';
   import { Button } from '$lib/components/ui/button';
   import CheckCircle from 'lucide-svelte/icons/check-circle';
   import Layers from 'lucide-svelte/icons/layers';
+  import Plus from 'lucide-svelte/icons/plus';
   import { ModeWatcher } from 'mode-watcher';
   import { type Snippet } from 'svelte';
   import '../app.css';
-  import { afterNavigate } from '$app/navigation';
 
   export let children: Snippet;
 
@@ -21,10 +22,15 @@
 <div class="root">
   <header>
     <a href="/" class="home"><CheckCircle class="mr-2 h-4 w-4" />Check</a>
-    <Button href="/check" variant="outline">
-      <Layers class="mr-2 h-4 w-4" />
-      My checklists
-    </Button>
+    <div>
+      <Button class="mr-2" href="/check" variant="outline">
+        <Layers class="mr-2 h-4 w-4" />
+        My checklists
+      </Button>
+      <Button href="/new" size="icon">
+        <Plus class="h-4 w-4" />
+      </Button>
+    </div>
   </header>
 
   <main id="main">
@@ -79,5 +85,7 @@
 
     width: 768px;
     max-width: 90vw;
+
+    height: 100%;
   }
 </style>
