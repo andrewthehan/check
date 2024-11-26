@@ -53,7 +53,7 @@
       <Card.Content>
         <Card.Title class="flex items-center">
           {name}
-          <Badge class="ml-2" variant="secondary">{items.length} items</Badge>
+          <Badge class="ml-2" variant="secondary">{items.length}&nbsp;items</Badge>
           {#if items.length > 0 && items.every((i) => i.completeDate != null)}
             <Badge class="ml-1" variant="secondary">Completed</Badge>
           {/if}

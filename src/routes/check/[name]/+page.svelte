@@ -54,7 +54,7 @@
   <section class="header">
     <h1 class="flex scroll-m-20 items-center text-4xl font-extrabold tracking-tight lg:text-5xl">
       {name}
-      <Badge class="ml-2" variant="secondary">{checklist.items.length} items</Badge>
+      <Badge class="ml-2" variant="secondary">{checklist.items.length}&nbsp;items</Badge>
       {#if checklist.items.length > 0 && checklist.items.every((i) => i.completeDate != null)}
         <Badge class="ml-1" variant="secondary">Completed</Badge>
       {/if}
