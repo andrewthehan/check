@@ -8,7 +8,13 @@
 </script>
 
 <section>
-  <p class="text-lg font-semibold">A minimal checklist app.</p>
+  <p class="text-lg font-semibold">
+    A minimal checklist app by <a
+      href="https://github.com/andrewthehan/check"
+      target="_blank"
+      class="underline">@andrewthehan</a
+    >.
+  </p>
 </section>
 
 <section>
@@ -28,7 +34,7 @@
         locally
       </a>.
     </li>
-    <li>Create copies of checklists.</li>
+    <li>Reuse and share checklists.</li>
   </ul>
 </section>
 
