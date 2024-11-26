@@ -40,6 +40,10 @@
   // 	checklist.updateDate = new Date();
   // });
   let isEditingDescription = $state(false);
+
+  const sortedItems = $derived(
+    checklist != null ? checklist.items.toSorted((a, b) => a.name.localeCompare(b.name)) : []
+  );
 </script>
 
 {#if checklist == null}
@@ -64,7 +68,7 @@
         <DropdownMenu.Trigger><MoreVertical class="h-4 w-4" /></DropdownMenu.Trigger>
         <DropdownMenu.Content>
           <DropdownMenu.Label class="flex items-center">
-            Create: {checklist.createDate.toLocaleDateString('en-US', {
+            Created: {checklist.createDate.toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
@@ -72,15 +76,15 @@
               minute: 'numeric'
             })}
           </DropdownMenu.Label>
-          <DropdownMenu.Label class="flex items-center">
-            Last update: {checklist.updateDate.toLocaleDateString('en-US', {
+          <!-- <DropdownMenu.Label class="flex items-center">
+            Last updated: {checklist.updateDate.toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
               hour: 'numeric',
               minute: 'numeric'
             })}
-          </DropdownMenu.Label>
+          </DropdownMenu.Label> -->
           <DropdownMenu.Separator />
           <Dialog.Root>
             <Dialog.Trigger
@@ -141,7 +145,7 @@
       {checklist.description.trim().length > 0 ? checklist.description : 'No description'}
     </button>
   {/if}
-  <Progress class="my-4 h-2" value={getCompletionPercentage(checklist)} max={1} />
+  <Progress class="my-4 max-h-2 min-h-2" value={getCompletionPercentage(checklist)} max={1} />
   <form
     class="my-4 flex"
     onsubmit={() => {
@@ -156,29 +160,29 @@
     <Button class="ml-4" type="submit">Add</Button>
   </form>
 
-  {#each checklist.items as item, i (item.name)}
+  {#each sortedItems as item, i (item.name)}
     <section class="item">
       <Checkbox
         id={`item${i}`}
-        checked={checklist.items[i].completeDate != null}
+        checked={sortedItems[i].completeDate != null}
         on:click={(e) => {
-          if (checklist.items[i].completeDate != null) {
-            checklist.items[i].completeDate = null;
+          if (sortedItems[i].completeDate != null) {
+            sortedItems[i].completeDate = null;
           } else {
-            checklist.items[i].completeDate = new Date();
+            sortedItems[i].completeDate = new Date();
           }
         }}
       />
       <Label
-        class={`ml-6 flex-1 text-xl ${checklist.items[i].completeDate != null ? 'line-through' : ''}`}
-        for={`item${i}`}>&nbsp;{checklist.items[i].name}&nbsp;</Label
+        class={`ml-6 flex-1 text-xl ${sortedItems[i].completeDate != null ? 'line-through' : ''}`}
+        for={`item${i}`}>&nbsp;{sortedItems[i].name}&nbsp;</Label
       >
       <DropdownMenu.Root>
         <DropdownMenu.Trigger><MoreVertical class="h-4 w-4" /></DropdownMenu.Trigger>
         <DropdownMenu.Content>
-          {#if checklist.items[i].completeDate != null}
+          {#if sortedItems[i].completeDate != null}
             <DropdownMenu.Label class="flex items-center"
-              >Complete: {checklist.items[i].completeDate.toLocaleDateString('en-US', {
+              >Complete: {sortedItems[i].completeDate.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
@@ -188,8 +192,12 @@
             >
             <DropdownMenu.Separator />
           {/if}
-          <DropdownMenu.Item onclick={() => checklist.items.splice(i, 1)}
-            ><Trash2 class="mr-2 h-4 w-4" />Delete</DropdownMenu.Item
+          <DropdownMenu.Item
+            onclick={() =>
+              checklist.items.splice(
+                checklist.items.findIndex((item) => item.name === sortedItems[i].name),
+                1
+              )}><Trash2 class="mr-2 h-4 w-4" />Delete</DropdownMenu.Item
           >
         </DropdownMenu.Content>
       </DropdownMenu.Root>

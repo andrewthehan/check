@@ -9,11 +9,6 @@ export enum ChecklistSortOptions {
   COMPLETION = 'Completion'
 }
 
-export enum ChecklistItemSortOptions {
-  NAME,
-  COMPLETE_DATE
-}
-
 export const CHECKLISTS_SORT_OPTION_KEY = 'checklists-sort-option';
 
 class ChecklistSortOptionsSerializer {
