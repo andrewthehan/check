@@ -11,12 +11,28 @@ export async function loadEngine(): Promise<MLCEngine> {
 
 export async function generateChecklistItems(name: string, count: number): Promise<string[]> {
   if (engine == null) {
-    toast.success('The first use of AI loads some models which may take a few minutes.', {
-      action: {
-        label: 'OK',
-        onClick: () => {}
+    if (
+      !confirm(
+        'The first use of AI downloads a large model around 4.3 GB. Note that if you already downloaded the model, this should just pull from the cache. Are you sure you want to proceed?'
+      )
+    ) {
+      toast.warning('Skipped AI generation.', {
+        action: {
+          label: 'OK',
+          onClick: () => {}
+        }
+      });
+      return [];
+    }
+    toast.success(
+      'The first use of AI per session loads some models which may take a few minutes.',
+      {
+        action: {
+          label: 'OK',
+          onClick: () => {}
+        }
       }
-    });
+    );
     engine = await loadEngine();
   }
   const messages: ChatCompletionMessageParam[] = [
