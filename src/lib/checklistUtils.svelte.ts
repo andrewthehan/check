@@ -10,6 +10,10 @@ export function checklistsStore(): LocalStore<Checklist[]> {
 
 export function exportData(): void {
   const checklists = getChecklists();
+  if (checklists.length === 0) {
+    alert('No checklists to export');
+    return;
+  }
   const data = new Blob([JSON.stringify(checklists)], { type: 'application/json' });
   const url = URL.createObjectURL(data);
   const a = document.createElement('a');
