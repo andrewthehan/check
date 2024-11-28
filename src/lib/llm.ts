@@ -19,7 +19,7 @@ export async function generateChecklist(
   if (engine == null) {
     if (
       !confirm(
-        'The first use of AI downloads a large model around ~650 MB. Note that if you already downloaded the model, this should just pull from the cache. Are you sure you want to proceed?'
+        'The first use of AI downloads a large model around ~664 MB which may take a few minutes. Note that if you already downloaded the model, this should just pull from the cache. Are you sure you want to proceed?'
       )
     ) {
       toast.warning('Skipped AI generation.', {
@@ -36,15 +36,6 @@ export async function generateChecklist(
         updateDate: new Date()
       };
     }
-    toast.success(
-      'The first use of AI per session loads some models which may take a few minutes.',
-      {
-        action: {
-          label: 'OK',
-          onClick: () => {}
-        }
-      }
-    );
     engine = await loadEngine(progressCallback);
   }
 

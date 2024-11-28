@@ -10,6 +10,7 @@
   import Pencil from 'lucide-svelte/icons/pencil';
   import WandSparkles from 'lucide-svelte/icons/wand-sparkles';
   import { type Checklist } from '../../model/Checklist';
+  import { toast } from 'svelte-sonner';
 
   const { url } = $page;
 
@@ -24,14 +25,23 @@
     }
   }
 
-  let generatedChecklist = $state<Promise<Checklist>>();
+  let generatedChecklist = $state<Promise<Checklist> | null>();
 
   $effect(() => {
     if (generatedChecklist == null) {
       return;
     }
 
-    generatedChecklist.then(create);
+    generatedChecklist.then(create).catch((error) => {
+      toast.warning(error.message, {
+        action: {
+          label: 'OK',
+          onClick: () => {}
+        }
+      });
+      aiProgressText = '';
+      generatedChecklist = null;
+    });
   });
 
   let aiProgressText = $state('');
@@ -77,9 +87,11 @@
               <WandSparkles class="mr-2 h-4 w-4" />Create with AI
             </Button>
           {:else}
-            <Button class="mx-2" disabled>
-              <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />Generating
-            </Button>
+            {#await generatedChecklist}
+              <Button class="mx-2" disabled>
+                <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />Generating
+              </Button>
+            {/await}
           {/if}
         </div>
       {/if}
