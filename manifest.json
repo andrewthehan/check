@@ -10,5 +10,22 @@
       "sizes": "24x24",
       "type": "image/svg"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "My checklists",
+      "short_name": "My checklists",
+      "description": "View all my checklists",
+      "url": "/check",
+      "icons": [{ "src": "favicon.svg", "sizes": "24x24" }]
+    },
+    {
+      "name": "New checklist",
+      "short_name": "New checklist",
+      "description": "Create a new checklist",
+      "url": "/new",
+      "icons": [{ "src": "favicon.svg", "sizes": "24x24" }]
+    }
+  ],
+  "description": "A minimal checklist app"
 }
