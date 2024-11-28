@@ -4,12 +4,13 @@
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="manifest" href="/manifest.json" />
     
-		<link rel="modulepreload" href="/_app/immutable/entry/start.7PB2YPhD.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/entry.BIxfVsmr.js">
+		<link rel="modulepreload" href="/_app/immutable/entry/start.DZmJ2MmF.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/entry.CM47D4GP.js">
 		<link rel="modulepreload" href="/_app/immutable/chunks/index-client.RmORvUAM.js">
 		<link rel="modulepreload" href="/_app/immutable/chunks/index.BSZGPKe1.js">
-		<link rel="modulepreload" href="/_app/immutable/entry/app.D_aZLzVq.js">
+		<link rel="modulepreload" href="/_app/immutable/entry/app.Cg-xbz7S.js">
 		<link rel="modulepreload" href="/_app/immutable/chunks/disclose-version.CXInryEC.js">
 		<link rel="modulepreload" href="/_app/immutable/chunks/props.D_esEMjf.js">
 		<link rel="modulepreload" href="/_app/immutable/chunks/svelte-component.DQT3Byxq.js">
@@ -18,18 +19,24 @@
     <div style="display: contents">
 			<script>
 				{
-					__sveltekit_1kfl8r5 = {
+					__sveltekit_v05iyg = {
 						base: ""
 					};
 
 					const element = document.currentScript.parentElement;
 
 					Promise.all([
-						import("/_app/immutable/entry/start.7PB2YPhD.js"),
-						import("/_app/immutable/entry/app.D_aZLzVq.js")
+						import("/_app/immutable/entry/start.DZmJ2MmF.js"),
+						import("/_app/immutable/entry/app.Cg-xbz7S.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element);
 					});
+
+					if ('serviceWorker' in navigator) {
+						addEventListener('load', function () {
+							navigator.serviceWorker.register('/service-worker.js');
+						});
+					}
 				}
 			</script>
 		</div>
