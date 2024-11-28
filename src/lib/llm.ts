@@ -1,17 +1,21 @@
-import { CreateMLCEngine, type MLCEngine } from '@mlc-ai/web-llm';
+import { CreateMLCEngine, type InitProgressCallback, type MLCEngine } from '@mlc-ai/web-llm';
 import { Type } from '@sinclair/typebox';
 import { toast } from 'svelte-sonner';
 import type { Checklist } from '../model/Checklist';
 
 let engine: MLCEngine | null = null;
 
-export async function loadEngine(): Promise<MLCEngine> {
+export async function loadEngine(progressCallback: InitProgressCallback): Promise<MLCEngine> {
   return CreateMLCEngine('Llama-3.2-1B-Instruct-q4f32_1-MLC', {
-    initProgressCallback: console.log
+    initProgressCallback: progressCallback
   });
 }
 
-export async function generateChecklist(name: string, count: number): Promise<Checklist> {
+export async function generateChecklist(
+  name: string,
+  count: number,
+  progressCallback: InitProgressCallback
+): Promise<Checklist> {
   if (engine == null) {
     if (
       !confirm(
@@ -41,7 +45,7 @@ export async function generateChecklist(name: string, count: number): Promise<Ch
         }
       }
     );
-    engine = await loadEngine();
+    engine = await loadEngine(progressCallback);
   }
 
   const generator = await engine.chatCompletion({

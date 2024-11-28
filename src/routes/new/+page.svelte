@@ -33,6 +33,8 @@
 
     generatedChecklist.then(create);
   });
+
+  let aiProgressText = $state('');
 </script>
 
 <form
@@ -53,26 +55,36 @@
     </section>
   {/if}
   <Input class="my-4" type="text" bind:value={checklist.name} placeholder="Name" />
-  <div class="my-4 flex self-center">
-    <Button type="submit" disabled={checklist.name.length === 0}
-      ><Pencil class="mr-2 h-4 w-4" />Create</Button
-    >
+  <div class="my-4 flex flex-col items-center self-center">
+    <div class="flex">
+      <Button type="submit" disabled={checklist.name.length === 0}
+        ><Pencil class="mr-2 h-4 w-4" />Create</Button
+      >
 
-    {#if checklist.items.length === 0}
-      {#if generatedChecklist == null}
-        <Button
-          class="mx-2"
-          disabled={checklist.name.length === 0}
-          onclick={() => (generatedChecklist = generateChecklist(checklist.name, 10))}
-        >
-          <WandSparkles class="mr-2 h-4 w-4" />Create with AI
-        </Button>
-      {:else}
-        <Button class="mx-2" disabled>
-          <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />Generating
-        </Button>
+      {#if checklist.items.length === 0}
+        <div>
+          {#if generatedChecklist == null}
+            <Button
+              class="mx-2"
+              disabled={checklist.name.length === 0}
+              onclick={() =>
+                (generatedChecklist = generateChecklist(
+                  checklist.name,
+                  10,
+                  (progress) => (aiProgressText = progress.text)
+                ))}
+            >
+              <WandSparkles class="mr-2 h-4 w-4" />Create with AI
+            </Button>
+          {:else}
+            <Button class="mx-2" disabled>
+              <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />Generating
+            </Button>
+          {/if}
+        </div>
       {/if}
-    {/if}
+    </div>
+    <span>{aiProgressText}</span>
   </div>
 </form>
 
