@@ -19,7 +19,7 @@
   <meta name="description" content="A minimal checklist app" />
 </svelte:head>
 
-<ModeWatcher />
+<ModeWatcher themeColors={{ dark: 'hsl(222.2, 84%, 4.9%)', light: 'white' }} />
 <Toaster />
 <div class="root">
   <header>

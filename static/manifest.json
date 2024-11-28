@@ -1,0 +1,14 @@
+{
+  "background_color": "#020817",
+  "name": "Check",
+  "short_name": "Check",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "24x24",
+      "type": "image/svg"
+    }
+  ]
+}
