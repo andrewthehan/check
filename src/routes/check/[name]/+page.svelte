@@ -144,7 +144,10 @@
     class="my-4 flex"
     onsubmit={() => {
       const formatted = newItem.trim();
-      if (formatted === '' || checklist.items.some((i) => i.name === formatted)) {
+      if (
+        formatted === '' ||
+        checklist.items.some((i) => i.name.toLocaleUpperCase() === formatted.toLocaleUpperCase())
+      ) {
         return;
       }
       checklist.items.push({ name: formatted, completeDate: null });
@@ -152,7 +155,14 @@
     }}
   >
     <Input type="text" placeholder="Add item" bind:value={newItem} />
-    <Button class="ml-4" type="submit">Add</Button>
+    <Button
+      class="ml-4"
+      type="submit"
+      disabled={newItem.trim() === '' ||
+        checklist.items.some(
+          (i) => i.name.toLocaleUpperCase() === newItem.trim().toLocaleUpperCase()
+        )}>Add</Button
+    >
   </form>
 
   {#each sortedItems as item, i (item.name)}
