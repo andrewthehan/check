@@ -86,7 +86,7 @@ export function formatChecklist(checklist: Checklist): Checklist {
   return {
     name: checklist.name.trim(),
     description: checklist.description.trim(),
-    items: checklist.items.map((item) => ({
+    items: [...new Set(checklist.items)].map((item) => ({
       name: item.name.trim(),
       completeDate: item.completeDate
     })),
@@ -145,7 +145,7 @@ export function newChecklist({
   return formatChecklist({
     name,
     description,
-    items: items.map((itemName) => ({ name: itemName, completeDate: null })),
+    items: [...new Set(items)].map((itemName) => ({ name: itemName, completeDate: null })),
     createDate: new Date(),
     updateDate: new Date()
   });

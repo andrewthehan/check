@@ -143,10 +143,11 @@
   <form
     class="my-4 flex"
     onsubmit={() => {
-      if (newItem.trim() === '') {
+      const formatted = newItem.trim();
+      if (formatted === '' || checklist.items.some((i) => i.name === formatted)) {
         return;
       }
-      checklist.items.push({ name: newItem.trim(), completeDate: null });
+      checklist.items.push({ name: formatted, completeDate: null });
       newItem = '';
     }}
   >

@@ -5,7 +5,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
-  import { generateChecklistItems } from '$lib/llm';
+  import { generateChecklist } from '$lib/llm';
   import LoaderCircle from 'lucide-svelte/icons/loader-circle';
   import Pencil from 'lucide-svelte/icons/pencil';
   import WandSparkles from 'lucide-svelte/icons/wand-sparkles';
@@ -15,33 +15,30 @@
 
   const checklist = $state<Checklist>(parseFromQueryParams(url.searchParams));
 
-  async function create() {
+  async function create(checklistToCreate: Checklist) {
     try {
-      createChecklist(checklist);
-      await goto(`/check/${checklist.name}`);
+      createChecklist(checklistToCreate);
+      await goto(`/check/${checklistToCreate.name}`);
     } catch (error: any) {
       alert(error.message);
     }
   }
 
-  let generatedChecklistItems = $state<Promise<string[]>>();
+  let generatedChecklist = $state<Promise<Checklist>>();
 
   $effect(() => {
-    if (generatedChecklistItems == null) {
+    if (generatedChecklist == null) {
       return;
     }
 
-    generatedChecklistItems.then((items) => {
-      items.forEach((i) => checklist.items.push({ name: i, completeDate: null }));
-      create();
-    });
+    generatedChecklist.then(create);
   });
 </script>
 
 <form
   onsubmit={(e) => {
     e.preventDefault();
-    create();
+    create(checklist);
   }}
 >
   <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight">
@@ -62,11 +59,11 @@
     >
 
     {#if checklist.items.length === 0}
-      {#if generatedChecklistItems == null}
+      {#if generatedChecklist == null}
         <Button
           class="mx-2"
           disabled={checklist.name.length === 0}
-          onclick={() => (generatedChecklistItems = generateChecklistItems(checklist.name, 10))}
+          onclick={() => (generatedChecklist = generateChecklist(checklist.name, 10))}
         >
           <WandSparkles class="mr-2 h-4 w-4" />Create with AI
         </Button>
