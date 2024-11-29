@@ -151,7 +151,8 @@ export function parseFromQueryParams(searchParams: URLSearchParams): Checklist {
       searchParams
         .get('items')
         ?.split(',')
-        .map((i) => i.trim()) ?? []
+        .map((i) => i.trim())
+        .filter((i) => i.length > 0) ?? []
   });
 }
 
@@ -176,9 +177,19 @@ export function newChecklist({
 export function createShareLink(origin: string, checklist: Checklist): string {
   const searchParams = new URLSearchParams();
   checklist = formatChecklist(checklist);
-  searchParams.set('name', checklist.name);
-  searchParams.set('description', checklist.description);
-  searchParams.set('items', checklist.items.map((item) => item.name).join(','));
+  if (checklist.name.trim().length > 0) {
+    searchParams.set('name', checklist.name);
+  }
+  if (checklist.description.trim().length > 0) {
+    searchParams.set('description', checklist.description);
+  }
+  if (checklist.items.length > 0) {
+    searchParams.set('items', checklist.items.map((item) => item.name).join(','));
+  }
 
   return `${origin}/new?${searchParams.toString()}`;
+}
+
+export function getUrlEncodedChecklistName(checklistName: string): string {
+  return encodeURIComponent(checklistName);
 }

@@ -81,7 +81,7 @@
           <Share2 class="h-4 w-4" />
         </Button>
       </div>
-      <QR data={shareUrl} anchorOuterFill="#3F3FAA" anchorInnerFill="#FFA400" />
+      <QR data={shareUrl} />
     </Dialog.Content>
   </Dialog.Root>
 {/snippet}

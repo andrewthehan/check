@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { checklistsStore } from '$lib/checklistUtils.svelte';
+  import { checklistsStore, getUrlEncodedChecklistName } from '$lib/checklistUtils.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import * as Card from '$lib/components/ui/card';
   import { Input } from '$lib/components/ui/input';
@@ -48,7 +48,7 @@
 
 {#each sortedFilteredChecklists as checklist (checklist.name)}
   {@const { name, description, items, createDate, updateDate } = checklist}
-  <a href={`/check/${name}`}>
+  <a href={`/check/${getUrlEncodedChecklistName(name)}`}>
     <Card.Root class="my-2">
       <Card.Header class="pt-2">
         <Progress value={getCompletionPercentage(checklist)} max={1} class="mt-2 h-2" />

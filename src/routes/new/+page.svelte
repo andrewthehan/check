@@ -4,6 +4,7 @@
   import {
     checkIfCanCreate,
     createChecklist,
+    getUrlEncodedChecklistName,
     parseFromQueryParams
   } from '$lib/checklistUtils.svelte';
   import { Badge } from '$lib/components/ui/badge';
@@ -23,7 +24,7 @@
   async function create(checklistToCreate: Checklist) {
     try {
       createChecklist(checklistToCreate);
-      await goto(`/check/${checklistToCreate.name}`);
+      await goto(`/check/${getUrlEncodedChecklistName(checklistToCreate.name)}`);
     } catch (error: any) {
       toast.warning(error.message, {
         action: {
