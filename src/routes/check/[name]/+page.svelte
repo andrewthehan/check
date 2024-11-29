@@ -142,7 +142,8 @@
   <Progress class="my-4 max-h-2 min-h-2" value={getCompletionPercentage(checklist)} max={1} />
   <form
     class="my-4 flex"
-    onsubmit={() => {
+    onsubmit={(e) => {
+      e.preventDefault();
       const formatted = newItem.trim();
       if (
         formatted === '' ||
