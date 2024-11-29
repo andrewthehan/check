@@ -3,6 +3,7 @@
   import {
     checklistsStore,
     createShareLink,
+    getUrlEncodedChecklistName,
     newChecklist,
     removeChecklist
   } from '$lib/checklistUtils.svelte';
@@ -11,7 +12,7 @@
   import { Checkbox } from '$lib/components/ui/checkbox';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-  import { Input } from '$lib/components/ui/input';
+  import { Input, type FormInputEvent } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import Pencil from 'lucide-svelte/icons/pencil';
   import { Progress } from '$lib/components/ui/progress';
@@ -24,8 +25,8 @@
   import { goto } from '$app/navigation';
   import { type Checklist } from '../../../model/Checklist';
 
-  const { params, url } = $page;
-  const { name } = params;
+  const url = $derived($page.url);
+  const name = $derived($page.params.name);
 
   const checklists = checklistsStore();
   const checklist = $derived(checklists.value.find((c) => c.name === name));
@@ -34,14 +35,7 @@
 
   let newItem = $state('');
 
-  // $effect(() => {
-  // 	if (checklist == null) {
-  // 		return;
-  // 	}
-
-  // 	console.log('update date');
-  // 	checklist.updateDate = new Date();
-  // });
+  let isEditingName = $state(false);
   let isEditingDescription = $state(false);
 
   const sortedItems = $derived(
@@ -95,10 +89,32 @@
     <Button onclick={() => checklists.value.push(newChecklist({ name }))}>Create</Button>
   </section>
 {:else}
-  <section class="flex items-start justify-between">
-    <h1 class="flex scroll-m-20 items-center text-4xl font-extrabold tracking-tight">
-      {name}
-    </h1>
+  <section class="my-2 flex items-start justify-between">
+    {#if isEditingName}
+      <form class="flex items-center" onsubmit={() => (isEditingName = false)}>
+        <Input
+          class="scroll-m-20 items-center text-4xl font-extrabold tracking-tight"
+          type="text"
+          placeholder="Name"
+          value={checklist.name}
+          on:change={(e: FormInputEvent) => {
+            const newName = (e.target as HTMLInputElement).value;
+            goto(`/check/${getUrlEncodedChecklistName(newName)}`, { replaceState: true });
+            checklist.name = newName;
+          }}
+          on:blur={() => (isEditingName = false)}
+          autofocus
+        />
+      </form>
+    {:else}
+      <button
+        type="button"
+        class="flex scroll-m-20 items-center text-4xl font-extrabold tracking-tight"
+        onclick={() => (isEditingName = true)}
+      >
+        {name}
+      </button>
+    {/if}
     <div class="mt-3 flex items-center">
       <DropdownMenu.Root>
         <DropdownMenu.Trigger><MoreVertical class="h-4 w-4" /></DropdownMenu.Trigger>
@@ -113,26 +129,31 @@
       </DropdownMenu.Root>
     </div>
   </section>
-  {#if isEditingDescription}
-    <form class="my-1" onsubmit={() => (isEditingDescription = false)}>
-      <Input
-        type="text"
-        placeholder="Description"
-        bind:value={checklist.description}
-        on:blur={() => (isEditingDescription = false)}
-        autofocus
-      />
-    </form>
-  {:else}
-    <button
-      type="button"
-      class={`text-md my-1 flex items-center text-left ${checklist.description.trim().length > 0 ? '' : 'italic text-muted-foreground'}`}
-      onclick={() => (isEditingDescription = true)}
-    >
-      {checklist.description.trim().length > 0 ? checklist.description : 'No description'}
-      <Pencil class="ml-2 h-4 w-4 text-muted-foreground" />
-    </button>
-  {/if}
+  <section class="my-1 flex items-start justify-between">
+    {#if isEditingDescription}
+      <form onsubmit={() => (isEditingDescription = false)}>
+        <Input
+          class="text-md"
+          type="text"
+          placeholder="Description"
+          bind:value={checklist.description}
+          on:blur={() => (isEditingDescription = false)}
+          autofocus
+        />
+      </form>
+    {:else}
+      <button
+        type="button"
+        class={`text-md flex items-center justify-between text-left ${checklist.description.trim().length > 0 ? '' : 'italic text-muted-foreground'}`}
+        onclick={() => (isEditingDescription = true)}
+      >
+        {checklist.description.trim().length > 0 ? checklist.description : 'No description'}
+        <div class="ml-2 flex-1">
+          <Pencil class="h-4 w-4 text-muted-foreground" />
+        </div>
+      </button>
+    {/if}
+  </section>
   <section>
     {@render renderBadges(checklist)}
   </section>
