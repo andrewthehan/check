@@ -5,7 +5,7 @@ export enum ChecklistSortOptions {
   NAME = 'Name',
   ITEM_COUNT = 'Item Count',
   CREATE_DATE = 'Create Date',
-  UPDATE_DATE = 'Update Date',
+  // UPDATE_DATE = 'Update Date',
   COMPLETION = 'Completion'
 }
 
@@ -54,8 +54,8 @@ export function getSorter(
       return (a, b) => a.items.length - b.items.length;
     case ChecklistSortOptions.CREATE_DATE:
       return (a, b) => b.createDate.getTime() - a.createDate.getTime();
-    case ChecklistSortOptions.UPDATE_DATE:
-      return (a, b) => b.updateDate.getTime() - a.updateDate.getTime();
+    // case ChecklistSortOptions.UPDATE_DATE:
+    //   return (a, b) => b.updateDate.getTime() - a.updateDate.getTime();
     case ChecklistSortOptions.COMPLETION:
       return (a, b) => getCompletionPercentage(a) - getCompletionPercentage(b);
   }
