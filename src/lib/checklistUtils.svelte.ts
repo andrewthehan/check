@@ -1,3 +1,4 @@
+import { toast } from 'svelte-sonner';
 import type { Checklist } from '../model/Checklist';
 import { LocalStore, localStore } from './localStore.svelte';
 import { JSONSerializer } from './serializers';
@@ -32,7 +33,12 @@ export function checklistsStore(): LocalStore<Checklist[]> {
 export function exportData(): void {
   const checklists = getChecklists();
   if (checklists.length === 0) {
-    alert('No checklists to export');
+    toast.warning('No checklists to export.', {
+      action: {
+        label: 'OK',
+        onClick: () => {}
+      }
+    });
     return;
   }
   const data = new Blob([JSON.stringify(checklists)], { type: 'application/json' });
@@ -55,13 +61,23 @@ export function importData(file: File): Promise<Checklist[]> {
             createChecklist(checklist);
             return true;
           } catch (e: any) {
-            alert('Error importing checklist: ' + e.message);
+            toast.warning(`Error importing checklist: ${e.message}`, {
+              action: {
+                label: 'OK',
+                onClick: () => {}
+              }
+            });
             return false;
           }
         });
         resolve(imported);
       } catch (e: any) {
-        alert('Error importing data: ' + e.message);
+        toast.warning(`Error importing data: ${e.message}`, {
+          action: {
+            label: 'OK',
+            onClick: () => {}
+          }
+        });
         resolve([]);
       }
     };
@@ -95,12 +111,18 @@ export function formatChecklist(checklist: Checklist): Checklist {
   };
 }
 
+export function checkIfCanCreate(checklistName: string) {
+  const checklists = getChecklists();
+  checklistName = checklistName.trim();
+  if (checklists.some((c) => c.name.toLocaleUpperCase() === checklistName.toLocaleUpperCase())) {
+    throw new Error(`Checklist ${checklistName} already exists`);
+  }
+}
+
 export function createChecklist(checklist: Checklist): void {
   const checklists = getChecklists();
   checklist = formatChecklist(checklist);
-  if (checklists.some((c) => c.name === checklist.name)) {
-    throw new Error(`Checklist "${checklist.name}" already exists`);
-  }
+  checkIfCanCreate(checklist.name);
   checklists.push(checklist);
   setChecklists(checklists);
 }

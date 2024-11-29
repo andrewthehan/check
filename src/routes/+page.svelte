@@ -5,6 +5,7 @@
   import Moon from 'lucide-svelte/icons/moon';
   import Sun from 'lucide-svelte/icons/sun';
   import { toggleMode } from 'mode-watcher';
+  import { toast } from 'svelte-sonner';
 </script>
 
 <section>
@@ -75,7 +76,12 @@
           const file = e.currentTarget.files?.[0];
           if (file == null) return;
           const checklists = await importData(file);
-          alert(`Imported ${checklists.length} checklists.`);
+          toast.success(`Imported ${checklists.length} checklists.`, {
+            action: {
+              label: 'OK',
+              onClick: () => {}
+            }
+          });
         }}
       />
     </Button>

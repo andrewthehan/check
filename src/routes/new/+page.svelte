@@ -1,7 +1,11 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { createChecklist, parseFromQueryParams } from '$lib/checklistUtils.svelte';
+  import {
+    checkIfCanCreate,
+    createChecklist,
+    parseFromQueryParams
+  } from '$lib/checklistUtils.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
@@ -21,7 +25,12 @@
       createChecklist(checklistToCreate);
       await goto(`/check/${checklistToCreate.name}`);
     } catch (error: any) {
-      alert(error.message);
+      toast.warning(error.message, {
+        action: {
+          label: 'OK',
+          onClick: () => {}
+        }
+      });
     }
   }
 
@@ -77,12 +86,24 @@
             <Button
               class="mx-2"
               disabled={checklist.name.length === 0}
-              onclick={() =>
-                (generatedChecklist = generateChecklist(
+              onclick={() => {
+                try {
+                  checkIfCanCreate(checklist.name);
+                } catch (error: any) {
+                  toast.warning(error.message, {
+                    action: {
+                      label: 'OK',
+                      onClick: () => {}
+                    }
+                  });
+                  return;
+                }
+                generatedChecklist = generateChecklist(
                   checklist.name,
                   10,
                   (progress) => (aiProgressText = progress.text)
-                ))}
+                );
+              }}
             >
               <WandSparkles class="mr-2 h-4 w-4" />Create with AI
             </Button>
