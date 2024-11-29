@@ -109,7 +109,7 @@
     {:else}
       <button
         type="button"
-        class="flex scroll-m-20 items-center text-4xl font-extrabold tracking-tight"
+        class="flex scroll-m-20 items-center text-left text-4xl font-extrabold tracking-tight"
         onclick={() => (isEditingName = true)}
       >
         {name}
