@@ -2,7 +2,7 @@
 
 https://check.andrewhan.dev/
 
-A minimal checklist app.
+A minimal checklist app by [Andrew Han](https://andrewhan.dev/).
 
 ## Features
 

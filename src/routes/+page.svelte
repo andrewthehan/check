@@ -10,10 +10,8 @@
 
 <section>
   <p class="text-lg font-semibold">
-    A minimal checklist app by <a
-      href="https://github.com/andrewthehan/check"
-      target="_blank"
-      class="underline">@andrewthehan</a
+    A minimal checklist app by <a href="https://andrewhan.dev/" target="_blank" class="underline"
+      >Andrew Han</a
     >.
   </p>
 </section>
