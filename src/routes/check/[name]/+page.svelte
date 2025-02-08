@@ -74,6 +74,7 @@
         >
           <Share2 class="h-4 w-4" />
         </Button>
+        <Button class="ml-2" href={shareUrl}>Create</Button>
       </div>
       <QR data={shareUrl} />
     </Dialog.Content>
