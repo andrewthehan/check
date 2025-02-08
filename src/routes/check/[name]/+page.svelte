@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import {
     checklistsStore,
@@ -14,15 +15,13 @@
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Input, type FormInputEvent } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
-  import Pencil from 'lucide-svelte/icons/pencil';
-  import { Progress } from '$lib/components/ui/progress';
+  import Progress from '$lib/Progress.svelte';
   import QR from '@svelte-put/qr/svg/QR.svelte';
   import MoreVertical from 'lucide-svelte/icons/more-vertical';
+  import Pencil from 'lucide-svelte/icons/pencil';
   import QrCode from 'lucide-svelte/icons/qr-code';
   import Share2 from 'lucide-svelte/icons/share-2';
   import Trash2 from 'lucide-svelte/icons/trash-2';
-  import { getCompletionPercentage } from '../../../model/SortOptions';
-  import { goto } from '$app/navigation';
   import { type Checklist } from '../../../model/Checklist';
 
   const url = $derived($page.url);
@@ -34,6 +33,7 @@
   const shareUrl = $derived(checklist != null ? createShareLink(url.origin, checklist) : '');
 
   let newItem = $state('');
+  let newItemInput = $state<HTMLInputElement>();
 
   let isEditingName = $state(false);
   let isEditingDescription = $state(false);
@@ -160,11 +160,18 @@
   <section class="my-4">
     {@render renderShare(checklist)}
   </section>
-  <Progress class="my-4 max-h-2 min-h-2" value={getCompletionPercentage(checklist)} max={1} />
+  <div>
+    <Progress
+      value={checklist.items.filter((item) => item.completeDate != null).length}
+      max={checklist.items.length}
+    />
+  </div>
   <form
     class="my-4 flex"
     onsubmit={(e) => {
       e.preventDefault();
+      newItemInput?.focus();
+
       const formatted = newItem.trim();
       if (
         formatted === '' ||
@@ -176,15 +183,22 @@
       newItem = '';
     }}
   >
-    <Input type="text" placeholder="Add item" bind:value={newItem} />
+    <Input
+      type="text"
+      placeholder="Add item"
+      bind:value={newItem}
+      bind:inputElement={newItemInput}
+    />
     <Button
       class="ml-4"
       type="submit"
       disabled={newItem.trim() === '' ||
         checklist.items.some(
           (i) => i.name.toLocaleUpperCase() === newItem.trim().toLocaleUpperCase()
-        )}>Add</Button
+        )}
     >
+      Add
+    </Button>
   </form>
 
   {#each sortedItems as item, i (item.name)}

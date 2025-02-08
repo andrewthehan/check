@@ -3,12 +3,11 @@
   import { Badge } from '$lib/components/ui/badge';
   import * as Card from '$lib/components/ui/card';
   import { Input } from '$lib/components/ui/input';
-  import { Progress } from '$lib/components/ui/progress';
   import * as Select from '$lib/components/ui/select';
+  import Progress from '$lib/Progress.svelte';
   import {
     ChecklistSortOptions,
     checklistsSortOptionStore,
-    getCompletionPercentage,
     sortChecklists
   } from '../../model/SortOptions';
 
@@ -49,9 +48,13 @@
 {#each sortedFilteredChecklists as checklist (checklist.name)}
   {@const { name, description, items, createDate, updateDate } = checklist}
   <a href={`/check/${getUrlEncodedChecklistName(name)}`}>
-    <Card.Root class="my-2">
-      <Card.Header class="pt-2">
-        <Progress value={getCompletionPercentage(checklist)} max={1} class="mt-2 h-2" />
+    <Card.Root class="my-2 border-primary">
+      <Card.Header>
+        <Progress
+          value={items.filter((item) => item.completeDate != null).length}
+          max={items.length}
+          --progress-text-size="0.7rem"
+        />
       </Card.Header>
       <Card.Content>
         <Card.Title class="flex items-center">
