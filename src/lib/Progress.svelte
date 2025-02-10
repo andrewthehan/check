@@ -4,6 +4,7 @@
 </script>
 
 <div class="progress-container">
+  <div class="progress-border"></div>
   <div class="progress-text">
     {value} / {max} ({percent.toFixed(0)}%)
   </div>
@@ -15,14 +16,22 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: hsl(var(--primary));
-    outline: 1px solid hsl(var(--secondary));
+    background-color: var(--color, hsl(var(--primary)));
     border-radius: 5px;
     filter: invert(1);
 
     display: flex;
     flex-flow: column;
     justify-content: center;
+  }
+
+  .progress-border {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--color, hsl(var(--primary)));
+    border-radius: 5px;
+    filter: invert(1);
   }
 
   .progress-bar {
@@ -39,7 +48,7 @@
   .progress-text {
     align-self: center;
     font-size: var(--progress-text-size, 1rem);
-    color: hsl(var(--primary));
+    color: var(--color, hsl(var(--primary)));
     filter: invert(1);
   }
 </style>
