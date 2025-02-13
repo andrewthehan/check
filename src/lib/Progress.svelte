@@ -1,6 +1,6 @@
 <script lang="ts">
   let { value, max } = $props<{ value: number; max: number }>();
-  const percent: number = $derived((value / max) * 100);
+  const percent: number = $derived(max === 0 ? 0 : (value / max) * 100);
 </script>
 
 <div class="progress-container">
